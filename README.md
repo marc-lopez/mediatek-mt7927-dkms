@@ -11,3 +11,6 @@ Adds a Ubuntu specific bash scripts to simplify installation of drivers after ha
 ## License
 
 GPL-2.0-only
+
+## Credits
+Patches and firmware extraction logic based on jetm/mediatek-mt7927-dkms
