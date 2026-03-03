@@ -11,18 +11,31 @@ PKG_VER="1.5"
 DKMS_DIR="/usr/src/${PKG_NAME}-${PKG_VER}"
 BASE_URL="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/plain/drivers/bluetooth"
 
-echo "=== MT7927 Bluetooth Driver Installation Script (Forced Patching) ==="
+echo "=== MT7927 Bluetooth Driver Installation Script (Forced Patching & Path Fix) ==="
 
 # 1. FIRMWARE PLACEMENT
 echo "[1/4] Setting up Bluetooth Firmware..."
-sudo mkdir -p /lib/firmware/mediatek
+sudo mkdir -p /lib/firmware/mediatek/mt7925
+sudo mkdir -p /lib/firmware/mediatek/mt7927
 BT_FILE=$(find ./firmware/bluetooth -name "BT_RAM_CODE_MT6639_2_1_hdr.bin" | head -n 1)
 
 if [ -n "$BT_FILE" ]; then
+    # 1. Root Folder (Legacy Fallback)
     sudo cp "$BT_FILE" /lib/firmware/mediatek/
     sudo ln -sf /lib/firmware/mediatek/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/BT_RAM_CODE_MT7927_2_1_hdr.bin
     sudo ln -sf /lib/firmware/mediatek/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/BT_RAM_CODE_MT7925_2_1_hdr.bin
-    echo "Bluetooth firmware placed and symlinked."
+
+    # 2. MT7925 Subdirectory (Standard path)
+    sudo cp "$BT_FILE" /lib/firmware/mediatek/mt7925/
+    sudo ln -sf /lib/firmware/mediatek/mt7925/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/mt7925/BT_RAM_CODE_MT7927_2_1_hdr.bin
+    sudo ln -sf /lib/firmware/mediatek/mt7925/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/mt7925/BT_RAM_CODE_MT7925_2_1_hdr.bin
+
+    # 3. MT7927 Subdirectory (Future-proofing)
+    sudo cp "$BT_FILE" /lib/firmware/mediatek/mt7927/
+    sudo ln -sf /lib/firmware/mediatek/mt7927/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/mt7927/BT_RAM_CODE_MT7927_2_1_hdr.bin
+    sudo ln -sf /lib/firmware/mediatek/mt7927/BT_RAM_CODE_MT6639_2_1_hdr.bin /lib/firmware/mediatek/mt7927/BT_RAM_CODE_MT7925_2_1_hdr.bin
+
+    echo "Bluetooth firmware placed and symlinked in all required paths."
 else
     echo "!!! ERROR: BT_RAM_CODE_MT6639_2_1_hdr.bin not found."
     exit 1
