@@ -7,11 +7,11 @@ KVER_BASE=$(echo $KVER_FULL | cut -d'-' -f1)
 KVER_MINOR=$(echo $KVER_BASE | cut -d'.' -f1,2)
 
 PKG_NAME="mediatek-mt7927-wifi"
-PKG_VER="3.1"
+PKG_VER="3.2"
 DKMS_DIR="/usr/src/${PKG_NAME}-${PKG_VER}"
 BASE_URL="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/plain/drivers/net/wireless/mediatek/mt76"
 
-echo "=== MT7927 WiFi Driver Installation Script ==="
+echo "=== MT7927 WiFi Driver Installation Script (Full Tree) ==="
 
 # 1. FIRMWARE PLACEMENT
 echo "[1/4] Setting up Firmware..."
@@ -89,10 +89,40 @@ mt7925-common-y := mac.o mcu.o regd.o main.o init.o debugfs.o
 mt7925e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
+
+# -> THIS IS THE NEW FULL-TREE DKMS DECLARATION <-
 sudo tee "${DKMS_DIR}/dkms.conf" > /dev/null <<EOF
 PACKAGE_NAME="${PKG_NAME}"
 PACKAGE_VERSION="${PKG_VER}"
-BUILT_MODULE_NAME[0]="mt7925e"; BUILT_MODULE_LOCATION[0]="mt76/mt7925/"; DEST_MODULE_LOCATION[0]="/updates/dkms/"
+
+BUILT_MODULE_NAME[0]="mt76"
+BUILT_MODULE_LOCATION[0]="mt76/"
+DEST_MODULE_LOCATION[0]="/updates/dkms/"
+
+BUILT_MODULE_NAME[1]="mt76-connac-lib"
+BUILT_MODULE_LOCATION[1]="mt76/"
+DEST_MODULE_LOCATION[1]="/updates/dkms/"
+
+BUILT_MODULE_NAME[2]="mt792x-lib"
+BUILT_MODULE_LOCATION[2]="mt76/"
+DEST_MODULE_LOCATION[2]="/updates/dkms/"
+
+BUILT_MODULE_NAME[3]="mt7921-common"
+BUILT_MODULE_LOCATION[3]="mt76/mt7921/"
+DEST_MODULE_LOCATION[3]="/updates/dkms/"
+
+BUILT_MODULE_NAME[4]="mt7921e"
+BUILT_MODULE_LOCATION[4]="mt76/mt7921/"
+DEST_MODULE_LOCATION[4]="/updates/dkms/"
+
+BUILT_MODULE_NAME[5]="mt7925-common"
+BUILT_MODULE_LOCATION[5]="mt76/mt7925/"
+DEST_MODULE_LOCATION[5]="/updates/dkms/"
+
+BUILT_MODULE_NAME[6]="mt7925e"
+BUILT_MODULE_LOCATION[6]="mt76/mt7925/"
+DEST_MODULE_LOCATION[6]="/updates/dkms/"
+
 AUTOINSTALL="yes"
 EOF
 
@@ -100,4 +130,4 @@ sudo dkms add -m ${PKG_NAME} -v ${PKG_VER}
 sudo dkms build -m ${PKG_NAME} -v ${PKG_VER}
 sudo dkms install -m ${PKG_NAME} -v ${PKG_VER}
 sudo update-initramfs -u
-echo "WiFi driver installed. REBOOT now."
+echo "WiFi driver fully installed. REBOOT now."
