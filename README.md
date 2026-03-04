@@ -80,6 +80,7 @@ makepkg -si
 
 - **NixOS:** [cmspam/mt7927-nixos](https://github.com/cmspam/mt7927-nixos), [clemenscodes/linux-mt7927](https://github.com/clemenscodes/linux-mt7927)
 - **Ubuntu:** [giosal/mediatek-mt7927-dkms](https://github.com/giosal/mediatek-mt7927-dkms)
+- **Bazzite (Fedora Atomic):** [samutoljamo/bazzite-mt7927](https://github.com/samutoljamo/bazzite-mt7927)
 
 ## Post-install
 

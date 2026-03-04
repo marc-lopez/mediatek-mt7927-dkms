@@ -23,7 +23,7 @@ Tested: 5GHz+2.4GHz MLO (STR), 6GHz+2.4GHz MLO, single-link all bands.
 
 Co-developed-by: marcin-fm <marcin-fm@users.noreply.github.com>
 Signed-off-by: marcin-fm <marcin-fm@users.noreply.github.com>
-Signed-off-by: Loong0x00 <loong0x00@users.noreply.github.com>
+Signed-off-by: 张旭涵 <Loong.0x00@gmail.com>
 Signed-off-by: Javier Tia <floss@jetm.me>
 ---
 diff --git a/mt7925/init.c b/mt7925/init.c
