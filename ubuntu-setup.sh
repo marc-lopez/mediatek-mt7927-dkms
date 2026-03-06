@@ -115,6 +115,13 @@ mt792x-lib-y := mt792x_core.o mt792x_mac.o mt792x_trace.o mt792x_debugfs.o mt792
 ccflags-y := -I$(src)
 EOF
 
+sudo tee "mt76/mt7921/Makefile" > /dev/null <<'EOF'
+obj-m += mt7921-common.o mt7921e.o
+mt7921-common-y := mac.o mcu.o main.o init.o debugfs.o
+mt7921e-y := pci.o pci_mac.o pci_mcu.o
+ccflags-y := -I$(src) -I$(src)/..
+EOF
+
 # WHY: Fixes issue - Duplicate mt7925_regd_be_ctrl function in kernel 6.17
 # Kernel 6.19 split regulatory functions into a new regd.c file. But 6.17's init.c still has those functions, so both define mt7925_regd_be_ctrl, causing a linker error. Excluded regd.o from the Makefile so only init.c's copy compiles.
 # Reference: https://github.com/openwrt/mt76/issues/927#issuecomment-3963095762
@@ -126,21 +133,7 @@ mt7925-common-y := mac.o mcu.o regd.o main.o init.o debugfs.o
 mt7925e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
-
-sudo tee "mt76/mt7925/Makefile" > /dev/null <<'EOF'
-obj-m += mt7925-common.o mt7925e.o
-mt7925-common-y := mac.o mcu.o regd.o main.o init.o debugfs.o
-mt7925e-y := pci.o pci_mac.o pci_mcu.o
-ccflags-y := -I$(src) -I$(src)/..
-EOF
 else
-sudo tee "mt76/mt7921/Makefile" > /dev/null <<'EOF'
-obj-m += mt7921-common.o mt7921e.o
-mt7921-common-y := mac.o mcu.o main.o init.o debugfs.o
-mt7921e-y := pci.o pci_mac.o pci_mcu.o
-ccflags-y := -I$(src) -I$(src)/..
-EOF
-
 sudo tee "mt76/mt7925/Makefile" > /dev/null <<'EOF'
 obj-m += mt7925-common.o mt7925e.o
 mt7925-common-y := mac.o mcu.o main.o init.o debugfs.o
@@ -148,7 +141,6 @@ mt7925e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
 fi
-
 
 sudo dkms add -m ${PKG_NAME} -v ${PKG_VER}
 sudo dkms build -m ${PKG_NAME} -v ${PKG_VER}
