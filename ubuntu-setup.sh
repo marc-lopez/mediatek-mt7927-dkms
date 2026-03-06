@@ -126,6 +126,13 @@ mt7925-common-y := mac.o mcu.o regd.o main.o init.o debugfs.o
 mt7925e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
+
+sudo tee "mt76/mt7925/Makefile" > /dev/null <<'EOF'
+obj-m += mt7925-common.o mt7925e.o
+mt7925-common-y := mac.o mcu.o regd.o main.o init.o debugfs.o
+mt7925e-y := pci.o pci_mac.o pci_mcu.o
+ccflags-y := -I$(src) -I$(src)/..
+EOF
 else
 sudo tee "mt76/mt7921/Makefile" > /dev/null <<'EOF'
 obj-m += mt7921-common.o mt7921e.o
@@ -133,7 +140,6 @@ mt7921-common-y := mac.o mcu.o main.o init.o debugfs.o
 mt7921e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
-fi
 
 sudo tee "mt76/mt7925/Makefile" > /dev/null <<'EOF'
 obj-m += mt7925-common.o mt7925e.o
@@ -141,6 +147,8 @@ mt7925-common-y := mac.o mcu.o main.o init.o debugfs.o
 mt7925e-y := pci.o pci_mac.o pci_mcu.o
 ccflags-y := -I$(src) -I$(src)/..
 EOF
+fi
+
 
 sudo dkms add -m ${PKG_NAME} -v ${PKG_VER}
 sudo dkms build -m ${PKG_NAME} -v ${PKG_VER}
